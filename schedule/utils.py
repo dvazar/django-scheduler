@@ -170,9 +170,9 @@ def check_occurrence_permissions(function):
         occurrence, event, calendar = get_objects(request, **kwargs)
         if calendar and event:
             allowed = (
-                CHECK_EVENT_PERM_FUNC(event, user)
-                and CHECK_CALENDAR_PERM_FUNC(calendar, user)
-                and CHECK_OCCURRENCE_PERM_FUNC(occurrence, user)
+                    CHECK_EVENT_PERM_FUNC(event, user)
+                    and CHECK_CALENDAR_PERM_FUNC(calendar, user)
+                    and CHECK_OCCURRENCE_PERM_FUNC(occurrence, user)
             )
             if not allowed:
                 return HttpResponseRedirect(settings.LOGIN_URL)
@@ -241,3 +241,8 @@ def coerce_date_dict(date_dict):
         except KeyError:
             break
     return modified and ret_val or {}
+
+
+def absolute_add(dt, td):
+    dt_utc = dt.astimezone(timezone.utc)
+    return (dt_utc + td).astimezone(dt.tzinfo)
