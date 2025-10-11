@@ -14,7 +14,13 @@ from django.http import (
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.http import is_safe_url
+
+try:
+    from django.utils.http import url_has_allowed_host_and_scheme
+except ImportError:
+    # Django<=2.2
+    from django.utils.http import is_safe_url as url_has_allowed_host_and_scheme
+
 from django.views.decorators.http import require_POST
 from django.views.generic.base import TemplateResponseMixin
 from django.views.generic.detail import DetailView
@@ -320,7 +326,7 @@ def get_next_url(request, default):
         if request.method in ["GET", "HEAD"]
         else request.POST.get("next")
     )
-    if _next_url and is_safe_url(url=_next_url, host=request.get_host()):
+    if _next_url and url_has_allowed_host_and_scheme(_next_url, request.get_host()):
         next_url = _next_url
     return next_url
 
@@ -393,7 +399,7 @@ def _api_occurrences(start, end, calendar_slug, timezone):
     # event, using the "event_id" or the occurrence with the specified "id".
     # for more info https://github.com/llazzaro/django-scheduler/pull/169
     i = 1
-    if Occurrence.objects.all().count() > 0:
+    if Occurrence.objects.all().exists():
         i = Occurrence.objects.latest("id").id + 1
     event_list = []
     for calendar in calendars:
@@ -428,7 +434,9 @@ def _api_occurrences(start, end, calendar_slug, timezone):
                 # make event start and end dates aware in given timezone
                 event_start = event_start.astimezone(current_tz)
                 event_end = event_end.astimezone(current_tz)
-
+            if occurrence.cancelled:
+                # fixes bug 508
+                continue
             response_data.append(
                 {
                     "id": occurrence_id,
