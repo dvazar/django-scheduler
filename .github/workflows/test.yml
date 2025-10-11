@@ -6,32 +6,39 @@ on:
 
 jobs:
   test:
-    name: Python ${{ matrix.python-version }} / ${{ matrix.tox-environment }}
+    name: Python ${{ matrix.python-version }} / ${{ matrix.django-version }}
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
         python-version:
-          - 3.8
-          - 3.9
+          - "3.9"
           - "3.10"
-        tox-environment:
-          - django32
-          - django40
+          - "3.11"
+          - "3.12"
+          - "3.13"
+        django-version:
           - django41
-        include:
-          - python-version: 3.7
-            tox-environment: django32
-        # include:
-        #   - python-version: 3.8
-        #     tox-environment: djangomain
-        #   - python-version: 3.9
-        #     tox-environment: djangomain
+          - django42
+          - django50
+          - django51
+          - django52
+        exclude:
+          - python-version: "3.13"
+            django-version: django41
+          - python-version: "3.13"
+            django-version: django42
+          - python-version: "3.9"
+            django-version: django50
+          - python-version: "3.9"
+            django-version: django51
+          - python-version: "3.9"
+            django-version: django52
 
     env:
-      TOXENV: ${{ matrix.tox-environment }}
-      COVERALLS_FLAG_NAME: Python ${{ matrix.python-version }} / ${{ matrix.tox-environment }}
+      TOXENV: ${{ matrix.django-version }}
+      COVERALLS_FLAG_NAME: Python ${{ matrix.python-version }} / ${{ matrix.django-version }}
       COVERALLS_PARALLEL: true
       COVERALLS_SERVICE_NAME: github
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

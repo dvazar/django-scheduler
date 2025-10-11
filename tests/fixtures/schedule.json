@@ -12,7 +12,7 @@
             "last_login": "2009-07-01 23:28:31+00:00",
             "groups": [],
             "user_permissions": [],
-            "password": "sha1$45afe$fd274a3086305e9b6660e414035b69abde514a91",
+            "password": "pbkdf2_sha256$1000000$uPf6d00q4Uphbm32COnoym$NzIVb05/4FOQKvW8876i7OlqxUK0O//z4TpYliPGyKM=",
             "email": "admin@test.com",
             "date_joined": "2009-07-01 23:28:31+00:00"
         }

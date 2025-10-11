@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    name: ${{ matrix.tox-environment }}
+    name: ${{ matrix.django-version }}
     runs-on: ubuntu-latest
 
     env:
